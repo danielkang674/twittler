@@ -29,17 +29,60 @@ $(document).ready(function(){
       this.$tweetArea.appendTo(this.$body);
       this.allTweets.forEach((tweet)=>{
         let $tweet = $('<div></div>');
-        $tweet.text(`@ ${tweet.user}: ${tweet.message}`);
+        $tweet.html(`@ ${tweet.user}: ${tweet.message} - <i>${timeSince(tweet.created_at)} ago</i>`);
         this.$tweetArea.prepend($tweet);
       });
     },
     seeNewTweets(){
       this.$seeNewTweetsBtn.on("click", function(){
-        view.render();
+        view.init();
       });
       this.$seeNewTweetsBtn.appendTo(this.$body);
     }
   }
+
+  function timeSince(date) {
+    if (typeof date !== 'object') {
+      date = new Date(date);
+    }
+  
+    var seconds = Math.floor((new Date() - date) / 1000);
+    var intervalType;
+  
+    var interval = Math.floor(seconds / 31536000);
+    if (interval >= 1) {
+      intervalType = 'year';
+    } else {
+      interval = Math.floor(seconds / 2592000);
+      if (interval >= 1) {
+        intervalType = 'month';
+      } else {
+        interval = Math.floor(seconds / 86400);
+        if (interval >= 1) {
+          intervalType = 'day';
+        } else {
+          interval = Math.floor(seconds / 3600);
+          if (interval >= 1) {
+            intervalType = "hour";
+          } else {
+            interval = Math.floor(seconds / 60);
+            if (interval >= 1) {
+              intervalType = "minute";
+            } else {
+              interval = seconds;
+              intervalType = "second";
+            }
+          }
+        }
+      }
+    }
+  
+    if (interval > 1 || interval === 0) {
+      intervalType += 's';
+    }
+  
+    return interval + ' ' + intervalType;
+  };
 
   controller.init();
 });
