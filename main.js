@@ -9,6 +9,9 @@ $(document).ready(function(){
     },
     getAllTweets(){
       return model.streams.home;
+    },
+    getUserTweets(user){
+      return model.streams.users[user]
     }
   };
 
@@ -17,7 +20,7 @@ $(document).ready(function(){
       this.$body = $('body');
       this.allTweets = controller.getAllTweets();
       this.$seeNewTweetsBtn = $('<button>See new tweets</button>');
-      this.$tweetArea = $('<div></div>');
+      this.$tweetArea = $('<div class="tweet-area"></div>');
       this.render();
     },
     render(){
@@ -27,17 +30,36 @@ $(document).ready(function(){
     },
     showAllTweets(){
       this.$tweetArea.appendTo(this.$body);
-      this.allTweets.forEach((tweet)=>{
-        let $tweet = $('<div></div>');
-        $tweet.html(`@ ${tweet.user}: ${tweet.message} - <i>${timeSince(tweet.created_at)} ago</i>`);
-        this.$tweetArea.prepend($tweet);
-      });
+      for(let tweet of this.allTweets){
+        let $tweet = $(`<div></div>`);
+        $tweet.html(`<a href="#" id="${tweet.user}">@${tweet.user}</a>: ${tweet.message} - <i>${timeSince(tweet.created_at)} ago</i>`);
+        $(`#${tweet.user}`).click(function(){
+          view.seeUserTweets(tweet.user);
+        });
+        $tweet.prependTo(this.$tweetArea);
+      }
     },
     seeNewTweets(){
       this.$seeNewTweetsBtn.on("click", function(){
         view.init();
       });
       this.$seeNewTweetsBtn.appendTo(this.$body);
+    },
+    seeUserTweets(user){
+      this.$body.html('');
+      view.seeNewTweets();
+      let userTweets = $('<div></div>');
+      userTweets.appendTo(this.$body);
+      let tweets = controller.getUserTweets(user);
+      console.log(tweets);
+      for(let tweet of tweets){
+        let $tweet = $(`<div></div>`);
+        $tweet.html(`<a href="#" id="${tweet.user}">@${tweet.user}</a>: ${tweet.message} - <i>${timeSince(tweet.created_at)} ago</i>`);
+        $(`#${tweet.user}`).click(function(){
+          seeUserTweets(tweet.user);
+        });
+        $tweet.prependTo(userTweets);
+      }
     }
   }
 
