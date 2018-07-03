@@ -12,6 +12,9 @@ $(document).ready(function(){
     },
     getUserTweets(user){
       return model.streams.users[user]
+    },
+    getUsers(){
+      return model.users;
     }
   };
 
@@ -21,6 +24,7 @@ $(document).ready(function(){
       this.allTweets = controller.getAllTweets();
       this.$seeNewTweetsBtn = $('<button>See new tweets</button>');
       this.$tweetArea = $('<div class="tweet-area"></div>');
+      this.allUsers = controller.getUsers();
       this.render();
     },
     render(){
@@ -32,11 +36,16 @@ $(document).ready(function(){
       this.$tweetArea.appendTo(this.$body);
       for(let tweet of this.allTweets){
         let $tweet = $(`<div></div>`);
-        $tweet.html(`<a href="#" id="${tweet.user}">@${tweet.user}</a>: ${tweet.message} - <i>${timeSince(tweet.created_at)} ago</i>`);
-        $(`#${tweet.user}`).click(function(){
-          view.seeUserTweets(tweet.user);
-        });
+        $tweet.html(`<a href="#" class="${tweet.user}">@${tweet.user}</a>: ${tweet.message} - <i>${timeSince(tweet.created_at)} ago</i>`);
+        // $(`.${tweet.user}`).click(function(){
+        //   view.seeUserTweets(tweet.user);
+        // });
         $tweet.prependTo(this.$tweetArea);
+      }
+      for(let user of this.allUsers){
+        $(`.${user}`).click(function(){
+          view.seeUserTweets(user);
+        });
       }
     },
     seeNewTweets(){
@@ -51,12 +60,12 @@ $(document).ready(function(){
       let userTweets = $('<div></div>');
       userTweets.appendTo(this.$body);
       let tweets = controller.getUserTweets(user);
-      console.log(tweets);
       for(let tweet of tweets){
         let $tweet = $(`<div></div>`);
-        $tweet.html(`<a href="#" id="${tweet.user}">@${tweet.user}</a>: ${tweet.message} - <i>${timeSince(tweet.created_at)} ago</i>`);
-        $(`#${tweet.user}`).click(function(){
-          seeUserTweets(tweet.user);
+        $tweet.html(`: ${tweet.message} - <i>${timeSince(tweet.created_at)} ago</i>`);
+        $tweet.prepend(`<a href="#" class="${tweet.user}">@${tweet.user}</a>`);
+        $(`.${tweet.user}`).click(function(){
+          view.seeUserTweets(tweet.user);
         });
         $tweet.prependTo(userTweets);
       }
