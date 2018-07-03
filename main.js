@@ -25,21 +25,23 @@ $(document).ready(function(){
       this.$seeNewTweetsBtn = $('<button>See new tweets</button>');
       this.$tweetArea = $('<div class="tweet-area"></div>');
       this.allUsers = controller.getUsers();
+      this.$inputTweet = $('<input type="text" value="" id="inputTweet">');
+      this.$inputTweetBtn = $('<button id="submit">Write tweet</button>');
+      this.$inputArea = $('<div class="input-area"></div>');
       this.render();
     },
     render(){
       this.$body.html('');
       this.seeNewTweets();
+      this.inputArea();
       this.showAllTweets();
     },
     showAllTweets(){
       this.$tweetArea.appendTo(this.$body);
       for(let tweet of this.allTweets){
         let $tweet = $(`<div></div>`);
-        $tweet.html(`<a href="#" class="${tweet.user}">@${tweet.user}</a>: ${tweet.message} - <i>${timeSince(tweet.created_at)} ago</i>`);
-        // $(`.${tweet.user}`).click(function(){
-        //   view.seeUserTweets(tweet.user);
-        // });
+        $tweet.html(`: ${tweet.message} - <i>${timeSince(tweet.created_at)} ago</i>`);
+        $tweet.prepend(`<a href="#" class="${tweet.user}">@${tweet.user}</a>`);
         $tweet.prependTo(this.$tweetArea);
       }
       for(let user of this.allUsers){
@@ -64,12 +66,23 @@ $(document).ready(function(){
         let $tweet = $(`<div></div>`);
         $tweet.html(`: ${tweet.message} - <i>${timeSince(tweet.created_at)} ago</i>`);
         $tweet.prepend(`<a href="#" class="${tweet.user}">@${tweet.user}</a>`);
-        $(`.${tweet.user}`).click(function(){
-          view.seeUserTweets(tweet.user);
-        });
         $tweet.prependTo(userTweets);
       }
+      $(`.${user}`).click(function(){
+        view.seeUserTweets(user);
+      });
+    },
+    inputArea(){
+      this.$inputArea.prependTo(this.$body);
+      this.$inputTweet.appendTo(this.$inputArea);
+      this.$inputTweetBtn.appendTo(this.$inputArea);
+      $('#submit').click(function(){
+        let visitorTweet = $('#inputTweet').prop('value');
+        writeTweet(visitorTweet);
+        view.init();
+      });
     }
+
   }
 
   function timeSince(date) {
@@ -115,5 +128,6 @@ $(document).ready(function(){
     return interval + ' ' + intervalType;
   };
 
+  
   controller.init();
 });
