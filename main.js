@@ -41,18 +41,7 @@ $(document).ready(function(){
     },
     showAllTweets(){
       this.$tweetArea.appendTo(this.$body);
-      for(let tweet of this.allTweets){
-        let $tweet = $(`<div class="tweet"></div>`);
-        $tweet.html(`: ${tweet.message} - <i>${timeSince(tweet.created_at)} ago</i>`);
-        $tweet.prepend(`<a href="#" class="${tweet.user}">@${tweet.user}</a>`);
-        $tweet.prependTo(this.$tweetArea);
-      }
-      for(let user of this.allUsers){
-        $(`.${user}`).click(function(){
-          view.seeUserTweets(user);
-          view.inputArea();
-        });
-      }
+      this.createTweets(this.allTweets);
     },
     seeNewTweets(){
       this.$seeNewTweetsBtn.on("click", function(){
@@ -65,16 +54,7 @@ $(document).ready(function(){
       this.$tweetArea.appendTo(this.$body);
       this.$tweetArea.html('');
       let tweets = controller.getUserTweets(user);
-      for(let tweet of tweets){
-        let $tweet = $(`<div class="tweet"></div>`);
-        $tweet.html(`: ${tweet.message} - <i>${timeSince(tweet.created_at)} ago</i>`);
-        $tweet.prepend(`<a href="#" class="${tweet.user}">@${tweet.user}</a>`);
-        $tweet.prependTo(this.$tweetArea);
-      }
-      $(`.${user}`).click(function(){
-        view.seeUserTweets(user);
-        view.inputArea();
-      });
+      this.createTweets(tweets);
     },
     inputArea(){
       this.$inputArea.prependTo(this.$body);
@@ -91,6 +71,20 @@ $(document).ready(function(){
       let $title = $('<div class="title"></div>');
       $title.append('<h1>DK\'s Twittler App</h1>');
       this.$body.prepend($title);
+    },
+    createTweets(tweets){
+      for(let tweet of tweets){
+        let $tweet = $(`<div class="tweet"></div>`);
+        $tweet.html(`: ${tweet.message} - <i>${timeSince(tweet.created_at)} ago</i>`);
+        $tweet.prepend(`<a href="#" class="${tweet.user}">@${tweet.user}</a>`);
+        $tweet.prependTo(this.$tweetArea);
+      }
+      for(let user of this.allUsers){
+        $(`.${user}`).click(function(){
+          view.seeUserTweets(user);
+          view.inputArea();
+        });
+      }
     }
 
   }
