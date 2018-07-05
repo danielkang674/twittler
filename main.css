@@ -1,0 +1,28 @@
+body{
+  background-color: black;
+}
+
+h1{
+  color: white;
+}
+
+.tweet{
+  background-color: grey;
+  border: 1px solid yellow;
+  max-width: 650px;
+  margin: 5px 0px 5px 0px;
+  color: white;
+}
+
+.seeNewTweetsBtn{
+  margin: 0 0 0 10px;
+}
+
+#inputTweet{
+  width: 446px;
+}
+
+button{
+  background-color: black;
+  color: white;
+}

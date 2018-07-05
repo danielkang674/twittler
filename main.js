@@ -15,6 +15,9 @@ $(document).ready(function(){
     },
     getUsers(){
       return model.users;
+    },
+    writeTweet(tweet){
+      writeTweet(tweet);
     }
   };
 
@@ -22,7 +25,7 @@ $(document).ready(function(){
     init(){
       this.$body = $('body');
       this.allTweets = controller.getAllTweets();
-      this.$seeNewTweetsBtn = $('<button>See new tweets</button>');
+      this.$seeNewTweetsBtn = $('<button class="seeNewTweetsBtn">See new tweets</button>');
       this.$tweetArea = $('<div class="tweet-area"></div>');
       this.allUsers = controller.getUsers();
       this.$inputTweet = $('<input type="text" value="" id="inputTweet">');
@@ -32,14 +35,14 @@ $(document).ready(function(){
     },
     render(){
       this.$body.html('');
-      this.seeNewTweets();
       this.inputArea();
       this.showAllTweets();
+      this.title();
     },
     showAllTweets(){
       this.$tweetArea.appendTo(this.$body);
       for(let tweet of this.allTweets){
-        let $tweet = $(`<div></div>`);
+        let $tweet = $(`<div class="tweet"></div>`);
         $tweet.html(`: ${tweet.message} - <i>${timeSince(tweet.created_at)} ago</i>`);
         $tweet.prepend(`<a href="#" class="${tweet.user}">@${tweet.user}</a>`);
         $tweet.prependTo(this.$tweetArea);
@@ -47,6 +50,7 @@ $(document).ready(function(){
       for(let user of this.allUsers){
         $(`.${user}`).click(function(){
           view.seeUserTweets(user);
+          view.inputArea();
         });
       }
     },
@@ -54,22 +58,22 @@ $(document).ready(function(){
       this.$seeNewTweetsBtn.on("click", function(){
         view.init();
       });
-      this.$seeNewTweetsBtn.appendTo(this.$body);
+      this.$seeNewTweetsBtn.appendTo(this.$inputArea);
     },
     seeUserTweets(user){
       this.$body.html('');
-      view.seeNewTweets();
-      let userTweets = $('<div></div>');
-      userTweets.appendTo(this.$body);
+      this.$tweetArea.appendTo(this.$body);
+      this.$tweetArea.html('');
       let tweets = controller.getUserTweets(user);
       for(let tweet of tweets){
-        let $tweet = $(`<div></div>`);
+        let $tweet = $(`<div class="tweet"></div>`);
         $tweet.html(`: ${tweet.message} - <i>${timeSince(tweet.created_at)} ago</i>`);
         $tweet.prepend(`<a href="#" class="${tweet.user}">@${tweet.user}</a>`);
-        $tweet.prependTo(userTweets);
+        $tweet.prependTo(this.$tweetArea);
       }
       $(`.${user}`).click(function(){
         view.seeUserTweets(user);
+        view.inputArea();
       });
     },
     inputArea(){
@@ -78,9 +82,15 @@ $(document).ready(function(){
       this.$inputTweetBtn.appendTo(this.$inputArea);
       $('#submit').click(function(){
         let visitorTweet = $('#inputTweet').prop('value');
-        writeTweet(visitorTweet);
+        controller.writeTweet(visitorTweet);
         view.init();
       });
+      view.seeNewTweets();
+    },
+    title(){
+      let $title = $('<div class="title"></div>');
+      $title.append('<h1>DK\'s Twittler App</h1>');
+      this.$body.prepend($title);
     }
 
   }
