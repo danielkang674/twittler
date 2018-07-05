@@ -67,15 +67,18 @@ $(document).ready(function(){
       });
       view.seeNewTweets();
     },
-    title(){
+    title(user){
+      let name = user? `<h1>${user}'s tweets` : `<h1>DK's Twittler App</h1>`;
       let $title = $('<div class="title"></div>');
-      $title.append('<h1>DK\'s Twittler App</h1>');
+      $title.append(name);
       this.$body.prepend($title);
     },
     createTweets(tweets, users){
+      users = Array.isArray(users)? users : [users];
       for(let tweet of tweets){
         let $tweet = $(`<div class="tweet"></div>`);
-        $tweet.html(`: ${tweet.message} - <i>${timeSince(tweet.created_at)} ago</i>`);
+        $tweet.append(`<p>${tweet.message}</p>`);
+        $tweet.append(`<i style="opacity: 0.5">${timeSince(tweet.created_at)} ago</i>`);
         $tweet.prepend(`<a href="#" class="${tweet.user}">@${tweet.user}</a>`);
         $tweet.prependTo(this.$tweetArea);
       }
@@ -83,6 +86,7 @@ $(document).ready(function(){
         $(`.${user}`).click(function(){
           view.seeUserTweets(user);
           view.inputArea();
+          view.title(user);
         });
       }
     }
